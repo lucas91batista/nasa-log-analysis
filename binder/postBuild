@@ -1,0 +1,108 @@
+#!/bin/bash
+
+###############################################################
+#          jupyter/jupyterlab extensions/kernels              #
+###############################################################
+
+# sos installation
+python -m sos_notebook.install
+jupyter labextension install jupyterlab-sos --no-build 
+
+# Beaker installation and extension
+beakerx install
+jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build 
+jupyter labextension install beakerx-jupyterlab --no-build 
+
+# Table of contents Jupyter Lab Extension
+jupyter labextension install @jupyterlab/toc --no-build 
+
+# Jupyter/Jupyterlab extension for proxying internal applications
+jupyter serverextension enable --sys-prefix jupyter_server_proxy
+jupyter labextension install jupyterlab-server-proxy --no-build 
+
+# Building everything up
+jupyter lab build --dev
+
+###############################################################
+#             moving to a local installation folder           #
+###############################################################
+
+mkdir ~/resources/local
+cd    ~/resources/local
+
+###############################################################
+#             hadoop-related commands                         #
+###############################################################
+
+export HADOOP_VERSION=2.9.2
+echo "export HADOOP_VERSION=${HADOOP_VERSION}" >> ~/.bashrc
+echo "export HADOOP_VERSION=${HADOOP_VERSION}" >> ~/.profile
+
+export HADOOP_HOME=$(pwd)/hadoop-${HADOOP_VERSION}
+echo "export HADOOP_HOME=${HADOOP_HOME}"       >> ~/.bashrc
+echo "export HADOOP_HOME=${HADOOP_HOME}"       >> ~/.profile
+
+
+wget http://ftp.unicamp.br/pub/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz -q   && \
+tar -xvf hadoop-${HADOOP_VERSION}.tar.gz >> /dev/null                                                             && \
+rm       hadoop-${HADOOP_VERSION}.tar.gz              
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 " >> ~/.bashrc
+echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 " >> ~/.profile
+echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 " >> ${HADOOP_HOME}/etc/hadoop/hadoop-env.sh
+
+# adding bin and sbin to $path
+echo "export PATH=\$PATH:\$HADOOP_HOME/bin"  >> ~/.bashrc
+echo "export PATH=\$PATH:\$HADOOP_HOME/bin"  >> ~/.profile
+echo "export PATH=\$PATH:\$HADOOP_HOME/sbin" >> ~/.bashrc
+echo "export PATH=\$PATH:\$HADOOP_HOME/sbin" >> ~/.profile
+
+#adding HADOOP_CONF_DIR to spark use YARN
+export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+echo "export HADOOP_CONF_DIR=${HADOOP_CONF_DIR}"       >> ~/.bashrc
+echo "export HADOOP_CONF_DIR=${HADOOP_CONF_DIR}"       >> ~/.profile
+
+# creating ssh-related folders
+mkdir ~/.ssh/etc/ssh -p
+
+# setup passphraseless ssh (forcing the adding to know hosts)
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa  &&   cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys && chmod 0600 ~/.ssh/authorized_keys 
+
+# generating keys for sshd server
+ssh-keygen -A -f ~/.ssh 
+chmod 600 ~/.ssh/etc/ssh/* -R
+
+# hadoop 3.*.*
+export PDSH_RCMD_TYPE=ssh
+echo "export PDSH_RCMD_TYPE=ssh" >> ~/.bashrc
+echo "export PDSH_RCMD_TYPE=ssh" >> ~/.profile
+
+# Adding ssh options to Hadoop via envvar
+# connecting in a diferent port (-p 8822)
+# avoiding host key checking (-o StrictHostKeyChecking=no)
+export HADOOP_SSH_OPTS="-o StrictHostKeyChecking=no -p 8822"
+echo "export HADOOP_SSH_OPTS=\"-o StrictHostKeyChecking=no -p 8822\"" >> ~/.bashrc
+echo "export HADOOP_SSH_OPTS=\"-o StrictHostKeyChecking=no -p 8822\"" >> ~/.profile
+
+
+
+###############################################################
+#                 spark-related commands                      #
+###############################################################
+export SPARK_VERSION=2.4.4
+echo "export SPARK_VERSION=${SPARK_VERSION}" >> ~/.bashrc
+echo "export SPARK_VERSION=${SPARK_VERSION}" >> ~/.profile
+
+export SPARK_HOME=$(pwd)/spark-${SPARK_VERSION}
+echo "export SPARK_HOME=${SPARK_HOME}" >> ~/.bashrc
+echo "export SPARK_HOME=${SPARK_HOME}" >> ~/.profile
+
+wget http://ftp.unicamp.br/pub/apache/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz               && \
+tar -xvf spark-${SPARK_VERSION}-bin-hadoop2.7.tgz > /dev/null 										 		              && \
+rm       spark-${SPARK_VERSION}-bin-hadoop2.7.tgz															              && \
+mv 		 spark-${SPARK_VERSION}-bin-hadoop2.7	spark-${SPARK_VERSION}
+
+# adding bin/ to $path
+echo "export PATH=\$PATH:\$SPARK_HOME/bin"   >> ~/.bashrc
+echo "export PATH=\$PATH:\$SPARK_HOME/bin"   >> ~/.profile
