@@ -9,3 +9,4 @@ net-tools
 openjdk-8-jdk
 telnet
 scala
+vsftpd
