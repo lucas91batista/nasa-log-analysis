@@ -2,7 +2,7 @@
 
 
 chmod +x ~/binder/start.hadoop 
-
+service vsftpd start
 
 
 
