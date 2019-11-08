@@ -1,7 +1,9 @@
 #!/bin/bash
 
 
-chmod +x ~/binder/start.hadoop 
+chmod +x ~/binder/start.hadoop
+chmod 777 /var/log/vsftpd.log
+
 service vsftpd start
 
 
