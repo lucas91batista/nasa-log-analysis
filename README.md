@@ -34,7 +34,9 @@ O BinderHub permite criar um ambiente computacional personalizado que pode ser a
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lucas91batista/nasa-log-analysis/master?urlpath=lab)
 
-Com o ambiente em execução, abrir o notebook index.ipynb e ir clicando no "Play" para executar o comando em cada célula. A cada click no "Play" uma célula é executada e seu resultado é exibido logo abaixo. 
+Com o ambiente em execução, abrir o notebook index.ipynb e ir clicando no "Play" para executar o comando em cada célula. A cada click no "Play" uma célula é executada e seu resultado é exibido logo abaixo.
+
+![Executando o projeto](https://github.com/lucas91batista/nasa-log-analysis/blob/master/resources/images/nasa.gif)
 
 ### Local
 
