@@ -38,6 +38,8 @@ Com o ambiente em execução, abrir o notebook index.ipynb e ir clicando no "Pla
 
 ![Executando o projeto](https://github.com/lucas91batista/nasa-log-analysis/blob/master/resources/images/nasa.gif)
 
+Para visualizar o script que contém o código em Spark+Python, basta clicar duas vezes em _nasa_requests.py_. Além disso, o arquivo index_respostas.ipynb contém o notebook com todas as células já executadas.
+
 ### Local
 
 **Pré-requisitos:** Apache Spark 2.4.4. Download e instruções de instalação são encontradas em https://spark.apache.org/downloads.html.
